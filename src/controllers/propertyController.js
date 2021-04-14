@@ -15,9 +15,6 @@ router.post("", async (req, res, next) => {
 
 router.get("", async (req, res, next) => {
   try {
-    if(req.params.bedrooms){
-      
-    }
     const properties = await Property.find().sort("name");
     return res.send({ properties });
   } catch (error) {
