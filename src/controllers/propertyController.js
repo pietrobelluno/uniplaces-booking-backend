@@ -15,8 +15,32 @@ router.post("", async (req, res, next) => {
 
 router.get("", async (req, res, next) => {
   try {
-    const properties = await Property.find().sort("name");
-    return res.send({ properties });
+    if (req.query.bedrooms) {
+      const properties = await Property.find().sort("name");
+      const filteredPropertyByBedroom = properties.filter((property) => {
+        let bedrooms = 0;
+        property.units.map((unit) => (unit === "bedroom" ? bedrooms++ : null));
+        if (bedrooms === Number(req.query.bedrooms)) {
+          return property;
+        }
+      });
+      if (filteredPropertyByBedroom.length > 0) {
+        return res.send({ properties: filteredPropertyByBedroom });
+      } else {
+        return res.status(400).send({
+          error: `We cant found property with ${req.query.bedrooms} bedrooms.`,
+        });
+      }
+    } else {
+      const properties = await Property.find().sort("name");
+      if (properties.length > 0) {
+        return res.send({ properties });
+      } else {
+        return res.status(400).send({
+          error: `We cant found any properties`,
+        });
+      }
+    }
   } catch (error) {
     return res.status(400).send({ error });
   }
