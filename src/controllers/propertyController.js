@@ -6,8 +6,12 @@ const router = express.Router();
 
 router.post("", async (req, res, next) => {
   try {
-    const property = await Property.create(req.body);
-    return res.send({ property });
+    if (req.body.name === "" || req.body.units.length === 0) {
+      return res.status(400).send({ error: "You need to fill all fields." });
+    } else {
+      const property = await Property.create(req.body);
+      return res.send({ property });
+    }
   } catch (error) {
     return res.status(400).send({ error });
   }
@@ -48,9 +52,10 @@ router.get("", async (req, res, next) => {
 
 router.delete("/:id", async (req, res, next) => {
   try {
-    await Property.remove(req.params.id);
+    await Property.findByIdAndRemove(req.params.id);
+    return res.send(200);
   } catch (error) {
-    return res.status(400).send({ error });
+    return res.status(400).send({ error: "We cant delete that property." });
   }
 });
 
