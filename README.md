@@ -1,5 +1,3 @@
-# uniplaces-booking-backend
-
 ## Getting Started
 
 Run the development server:
