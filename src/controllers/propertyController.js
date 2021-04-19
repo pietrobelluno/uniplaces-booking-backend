@@ -31,19 +31,13 @@ router.get("", async (req, res, next) => {
       if (filteredPropertyByBedroom.length > 0) {
         return res.send({ properties: filteredPropertyByBedroom });
       } else {
-        return res.status(400).send({
+        return res.status(200).send({
           error: `We cant found property with ${req.query.bedrooms} bedrooms.`,
         });
       }
     } else {
       const properties = await Property.find().sort("name");
-      if (properties.length > 0) {
-        return res.send({ properties });
-      } else {
-        return res.status(400).send({
-          error: `We cant found any properties`,
-        });
-      }
+      return res.send({ properties });
     }
   } catch (error) {
     return res.status(400).send({ error });
